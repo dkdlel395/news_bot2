@@ -7,4 +7,4 @@ new_bot2
 # 크롤링 뉴스 개수 설정
 ### 2. GPT news_bot 서비스
 # news_bot 페르소나 A, B 설정
-### 3. Django Web 서비스 제작
+### 3. Fast api 서비스 제작
