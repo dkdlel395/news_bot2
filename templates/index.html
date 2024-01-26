@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="createFoodForm">
+        <label for="create_food">create_food</label>
+        <input type="text" id="create_food" name="title" required>
+        <button type="button" onclick="createFood()">create_food</button>
+        <div></div>
+    </form>
+
+    <label for="get_all_food">get_all_food</label>
+    <input type="text" id="get_all_food" name="get_all_food" required>
+    <button type="submit">get_all_food</button>
+    <div></div>
+
+    <label for="get_food">get_food</label>
+    <input type="text" id="get_food" name="get_food" required>
+    <button type="submit">get_food</button>
+    <div></div>
+
+    <label for="update_food">update_food</label>
+    <input type="text" id="update_food" name="update_food" required>
+    <button type="submit">update_food</button>
+    <div></div>
+
+    <label for="delete_food">delete_food</label>
+    <input type="text" id="delete_food" name="delete_food" required>
+    <button type="submit">delete_food</button>
+    <div></div>
+
+    <label>현재 등록된 음식 : </label>
+    <label for="state_food">몰까요</label>
+
+    <!-- ########################## SCRIPT ########################## -->
+
+    <script>
+        async function createFood() {
+            const titleInput = document.getElementById('create_food');
+            const title = titleInput.value;
+            
+            // 입력 필드 초기화
+            titleInput.value = '';
+
+            const response = await fetch('/foods/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title }),
+            });
+
+            const result = await response.json();
+            console.log(result); // 서버에서 반환한 결과를 콘솔에 출력
+
+            // state_food 레이블에 추가
+            const stateFoodLabel = document.getElementById('state_food');
+            stateFoodLabel.innerText = `현재 등록된 음식: ${title}`;
+        }
+    </script>
+</body>
+</html>
