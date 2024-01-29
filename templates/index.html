@@ -13,39 +13,41 @@
         <div></div>
     </form>
 
-    <label for="get_all_food">get_all_food</label>
-    <input type="text" id="get_all_food" name="get_all_food" required>
-    <button type="submit">get_all_food</button>
-    <div></div>
+    <form>
+        <label for="get_food">get_food</label>
+        <input type="text" id="get_food" name="get_food" required>
+        <button type="submit">get_food</button>
+        <div></div>
+    </form>
+    
+    <form>
+        <label for="update_food">update_food</label>
+        <input type="text" id="update_food" name="update_food" required>
+        <button type="submit" onclick="updateStateFoodLabel()">update_food</button>
+        <div></div>
+    </form>
 
-    <label for="get_food">get_food</label>
-    <input type="text" id="get_food" name="get_food" required>
-    <button type="submit">get_food</button>
-    <div></div>
+    <form>
+        <label for="delete_food">delete_food</label>
+        <input type="text" id="delete_food" name="delete_food" required>
+        <button type="submit" onclick="deleteFood()">delete_food</button>
+        <div></div>
+    </form>
 
-    <label for="update_food">update_food</label>
-    <input type="text" id="update_food" name="update_food" required>
-    <button type="submit">update_food</button>
-    <div></div>
-
-    <label for="delete_food">delete_food</label>
-    <input type="text" id="delete_food" name="delete_food" required>
-    <button type="submit">delete_food</button>
-    <div></div>
-
-    <label>현재 등록된 음식 : </label>
-    <label for="state_food">몰까요</label>
+    <label for="state_food">현재 등록된 음식 : </label>
+    <span id="state_food"></span> 
 
     <!-- ########################## SCRIPT ########################## -->
 
+    
     <script>
         async function createFood() {
             const titleInput = document.getElementById('create_food');
             const title = titleInput.value;
-            
+    
             // 입력 필드 초기화
             titleInput.value = '';
-
+    
             const response = await fetch('/foods/', {
                 method: 'POST',
                 headers: {
@@ -53,14 +55,74 @@
                 },
                 body: JSON.stringify({ title }),
             });
-
+    
             const result = await response.json();
             console.log(result); // 서버에서 반환한 결과를 콘솔에 출력
+    
+            // state_food 레이블에 추가
+            updateStateFoodLabel();
+        }
+    
+        function updateStateFoodLabel() {
+            const stateFoodLabel = document.getElementById('state_food');
+    
+            // Fetch the updated list of foods and display them
+            fetch('/foods/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(foodsResult => {
+                // Display the list of foods in the span
+                stateFoodLabel.innerText = `현재 등록된 음식: ${JSON.stringify(foodsResult)}`;
+            })
+            .catch(error => console.error('Error fetching foods:', error));
+        }
+
+        
+        async function deleteFood() {
+            const deleteFoodInput = document.getElementById('delete_food_input');
+            const foodId = parseInt(deleteFoodInput.value);
+
+            const response = await fetch(`/foods/${foodId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const deletedFood = await response.json();
+            console.log(deletedFood); // 서버에서 반환한 결과를 콘솔에 출력
 
             // state_food 레이블에 추가
-            const stateFoodLabel = document.getElementById('state_food');
-            stateFoodLabel.innerText = `현재 등록된 음식: ${title}`;
+            updateStateFoodLabel();
         }
+    
+        // Event listener for button click
+        const createFoodButton = document.getElementById('createFoodButton');
+        createFoodButton.addEventListener('click', createFood);
+    
+        // Event listener for Enter key press
+        const createFoodInput = document.getElementById('create_food');
+        createFoodInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                createFood();
+            }
+        });
+
+        const deleteFoodButton = document.getElementById('delete_food_button');
+        deleteFoodButton.addEventListener('click', deleteFood);
+
+        // Event listener for Enter key press on delete_food_input
+        const deleteFoodInput = document.getElementById('delete_food_input');
+        deleteFoodInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                deleteFood();
+        }
+
+        });
     </script>
 </body>
 </html>
